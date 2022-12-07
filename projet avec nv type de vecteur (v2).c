@@ -3,7 +3,6 @@
 #include <math.h>
 #include <time.h>
 
-
 struct vecteur{
     int *donnees;
     int taille;
