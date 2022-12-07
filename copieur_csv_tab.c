@@ -31,7 +31,7 @@ void CSV_INSERT(FILE *F, FC *tab, int taille){
 	int i = 0, ligne = 0;
 	FC fiche;
 	
-	while(ligne<taille){
+	while(ligne<taille){ //trouver moyen de pas prendre en compte les points-virgules (creer variable int pas possible car santé = float (transformer le float en int de 0 a 10 ou 100?))
 		
 		fiche.age = fgetc(F);
 		fiche.revenu = fgetc(F);
