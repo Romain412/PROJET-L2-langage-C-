@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 int taille_fichier(FILE *f){
+	fseek(f,0,SEEK_SET);
 	char lettre = fgetc(f);
 	int nb=1;
 	while( lettre != EOF) {

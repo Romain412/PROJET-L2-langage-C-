@@ -6,7 +6,7 @@ typedef struct fiche_client{
 	int revenu; // revenu mensuel
 	float sante; // etat de santé E ]0-1]
 	int pret; // 1=oui / 0 = non
-	
+
 }FC;
 
 int taille_fichier(FILE *f){
@@ -30,9 +30,9 @@ void CSV_INSERT(FILE *F, FC *tab, int taille){
 	fseek(F,0,SEEK_SET);
 	int i = 0, ligne = 0;
 	FC fiche;
-	
+
 	while(ligne<taille){ //trouver moyen de pas prendre en compte les points-virgules (creer variable int pas possible car santé = float (transformer le float en int de 0 a 10 ou 100?))
-		
+
 		fiche.age = fgetc(F);
 		fiche.revenu = fgetc(F);
 		fiche.sante = fgetc(F);
@@ -40,19 +40,18 @@ void CSV_INSERT(FILE *F, FC *tab, int taille){
 		ligne++;
 		tab[i++] = fiche;
 	}
-	
-	
+
 	fseek(F,0,SEEK_SET);
 }
 
 int main(){
-	
+
 	FILE *fichier = NULL;
 	//fichier = fopen("","r");
 	int taille = (taille_fichier(fichier));
 	FC *tableau = creation_tab(taille);
-	
+
 	CSV_INSERT(fichier,tableau,taille);
-	
+
 	return 0;
 }
