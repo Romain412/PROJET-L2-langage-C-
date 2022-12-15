@@ -22,7 +22,7 @@ int nb_lignes_fichier_csv(FILE *f){
 		if(lettre == '\n') nb++;
 	}
 	
-	fseek(f,0,SEEK_SET);	//Deplacement dans f de 0 caracteres a partir du debut (pour pouvoir parcourir le fichier plusieurs fois)
+	fseek(f,0,SEEK_SET);	//Deplacement dans f de 0 caracteres a partir du debut (remet le fichier au debut)
 	return nb - 1;
 }
 
