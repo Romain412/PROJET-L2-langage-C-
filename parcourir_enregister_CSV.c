@@ -3,9 +3,9 @@
 #include <string.h>
 
 typedef struct fiche_client{
-	int age; // ya vrmnt besoin de commenter là ?
+	int age; // age de la personne
 	int revenu; // revenu mensuel
-	int sante; // etat de santé E ]0-100]
+	int sante; // etat de santé dans l'intervalle ]0-100]
 	int pret; // 1=oui / 0 = non
 	int categorie;
 }FC;
