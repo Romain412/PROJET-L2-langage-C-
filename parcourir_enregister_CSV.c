@@ -12,7 +12,7 @@ typedef struct fiche_client{
 	int categorie;
 }FC;
 
-int nb_lignes_fichier_csv(FILE *f){
+int nb_lignes_fichier_csv(FILE *f){ // calcule le nombre de lignes d'un CSV et enleve 1 (pour ne pas compter l'en-tête avec les noms de colonne
 	fseek(f,0,SEEK_SET);
 	char lettre = fgetc(f);
 	int nb = 1;
@@ -26,7 +26,7 @@ int nb_lignes_fichier_csv(FILE *f){
 	return nb - 1;
 }
 
-FC *remplir_tableau(FILE *doc){
+FC *remplir_tableau(FILE *doc){ // rempli un tableau de fiche_client (FC) avec les données d'un fichier CSV
 	int i=0, taille = nb_lignes_fichier_csv(doc);
 
 	FC *tab = malloc(sizeof(FC)*taille);
@@ -37,7 +37,7 @@ FC *remplir_tableau(FILE *doc){
 	
 	while(fgetc(doc) != '\n') fgetc(doc); 	//saute la ligne d'en-têtes
 
-	while (fgets(line, longueur_max_ligne, doc) != NULL){ 	//manque la fouille du csv et mettre la valeur dans nb_temp
+	while (fgets(line, longueur_max_ligne, doc) != NULL){ 	//tant que la ligne n'est pas vide
 
 		nb_temp = strtok(line, ";"); // stock dans nb_temp les caractère jusqu'au prochain caractère séparateur
 		temp.age = atoi(nb_temp);		//transforme la chaine de caractère en int et la stocke dans la variable temp;
@@ -62,24 +62,24 @@ FC *remplir_tableau(FILE *doc){
 }
 
 
-int ajouter_valeur_tableau(FC *tab,int taille, FC val){
+int ajouter_valeur_tableau(FC *tab,int taille, FC val){ //ajoute une valeur au tableau (augmente sa taille juste avant) et renvoie sa nouvelle taille
 	tab = realloc(tab, sizeof(FC)*(taille + 1));
 	tab[taille] = val;
 	return taille++;
 }
 
-	int main(){
+int main(){
 
 	FILE *fichier = NULL;
 	fichier = fopen("testCSV.csv","r");
 
 	FC*tab = remplir_tableau(fichier);
 
-	for(int i=0; i<(nb_lignes_fichier_csv(fichier));i++){
+	for(int i = 0; i < (nb_lignes_fichier_csv(fichier)); i++){
 
 		printf("%d ; %d ; %d ; %d ; %d \n",tab[i].age,tab[i].revenu,tab[i].sante,tab[i].pret,tab[i].categorie);
 
 	}
 
-return 0;
+	return 0;
 }
