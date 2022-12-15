@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+int longueur_max_ligne = 50;
+
 typedef struct fiche_client{
 	int age; // age de la personne
 	int revenu; // revenu mensuel
@@ -14,10 +16,12 @@ int nb_lignes_fichier_csv(FILE *f){
 	fseek(f,0,SEEK_SET);
 	char lettre = fgetc(f);
 	int nb = 1;
+	
 	while( lettre != EOF) {
 		lettre = fgetc(f);
 		if(lettre == '\n') nb++;
 	}
+	
 	fseek(f,0,SEEK_SET);	//Deplacement dans f de 0 caracteres a partir du debut (pour pouvoir parcourir le fichier plusieurs fois)
 	return nb - 1;
 }
@@ -28,15 +32,15 @@ FC *remplir_tableau(FILE *doc){
 	FC *tab = malloc(sizeof(FC)*taille);
 
 	FC temp;
-	char line[100];
-	char *nb_temp;
+	char line[longueur_max_ligne];	//tableau qui stockera chaque ligne en chaîne de caractère
+	char *nb_temp;	//variable qui gardera les char entre chaque ";" du CSV
 	
-	while(fgetc(doc) != '\n') fgetc(doc); //saute la ligne d'en-têtes
+	while(fgetc(doc) != '\n') fgetc(doc); 	//saute la ligne d'en-têtes
 
-	while (fgets(line, 100, doc) != NULL){ //manque la fouille du csv et mettre la valeur dans nb_temp
+	while (fgets(line, longueur_max_ligne, doc) != NULL){ 	//manque la fouille du csv et mettre la valeur dans nb_temp
 
-		nb_temp = strtok(line,";");
-		temp.age = atoi(nb_temp);
+		nb_temp = strtok(line, ";"); // stock dans nb_temp les caractère jusqu'au prochain caractère séparateur
+		temp.age = atoi(nb_temp);		//transforme la chaine de caractère en int et la stocke dans la variable temp;
 		
 		nb_temp = strtok(NULL, ";");
 		temp.revenu = atoi(nb_temp);
@@ -58,10 +62,10 @@ FC *remplir_tableau(FILE *doc){
 }
 
 
-FC *ajouter_valeur_tableau(FC *tab,int taille, FC val){
+int ajouter_valeur_tableau(FC *tab,int taille, FC val){
 	tab = realloc(tab, sizeof(FC)*(taille + 1));
 	tab[taille] = val;
-	return tab;
+	return taille++;
 }
 
 	int main(){
