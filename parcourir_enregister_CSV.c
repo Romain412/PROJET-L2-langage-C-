@@ -5,14 +5,14 @@
 int longueur_max_ligne = 50;
 
 typedef struct fiche_client{
-	int age; // age de la personne
-	int revenu; // revenu mensuel
-	int sante; // etat de santé dans l'intervalle ]0-100]
-	int pret; // 1=oui / 0 = non
+	int age; 			// age de la personne
+	int revenu;		// revenu mensuel
+	int sante; 			// etat de santé dans l'intervalle ]0-100]
+	int pret; 			// 1=oui / 0 = non
 	int categorie;
 }FC;
 
-int nb_lignes_fichier_csv(FILE *f){ // calcule le nombre de lignes d'un CSV et enleve 1 (pour ne pas compter l'en-tête avec les noms de colonne
+int nb_lignes_fichier_csv(FILE *f){ 				// calcule le nombre de lignes d'un CSV et enleve 1 (pour ne pas compter l'en-tête avec les noms de colonne
 	fseek(f,0,SEEK_SET);
 	char lettre = fgetc(f);
 	int nb = 1;
@@ -22,26 +22,26 @@ int nb_lignes_fichier_csv(FILE *f){ // calcule le nombre de lignes d'un CSV et e
 		if(lettre == '\n') nb++;
 	}
 	
-	fseek(f,0,SEEK_SET);	//Deplacement dans f de 0 caracteres a partir du debut (remet le fichier au debut)
+	fseek(f,0,SEEK_SET);								//Deplacement dans f de 0 caracteres a partir du debut (remet le fichier au debut)
 	return nb - 1;
 }
 
-FC *remplir_tableau(FILE *doc){ // rempli un tableau de fiche_client (FC) avec les données d'un fichier CSV
+FC *remplir_tableau(FILE *doc){ 					// rempli un tableau de fiche_client (FC) avec les données d'un fichier CSV
 	int i=0, taille = nb_lignes_fichier_csv(doc);
 
 	FC *tab = malloc(sizeof(FC)*taille);
 
 	FC temp;
-	char line[longueur_max_ligne];	//tableau qui stockera chaque ligne en chaîne de caractère
-	char *nb_temp;	//variable qui gardera les char entre chaque ";" du CSV
+	char line[longueur_max_ligne];					//tableau qui stockera chaque ligne en chaîne de caractère
+	char *nb_temp;											//variable qui gardera les char entre chaque ";" du CSV
 	
-	while(fgetc(doc) != '\n') fgetc(doc); 	//saute la ligne d'en-têtes
+	while(fgetc(doc) != '\n') fgetc(doc); 			//saute la ligne d'en-têtes
 
 	while (fgets(line, longueur_max_ligne, doc) != NULL){ 	//tant que la ligne n'est pas vide
 
-		nb_temp = strtok(line, ";"); // stock dans nb_temp les caractère jusqu'au prochain caractère séparateur
-		temp.age = atoi(nb_temp);		//transforme la chaine de caractère en int et la stocke dans la variable temp;
-		
+		nb_temp = strtok(line, ";");						// stock dans nb_temp les caractère jusqu'au prochain caractère séparateur
+		temp.age = atoi(nb_temp);						//transforme la chaine de caractère en int et la stocke dans la variable temp;
+			
 		nb_temp = strtok(NULL, ";");
 		temp.revenu = atoi(nb_temp);
 		
