@@ -6,7 +6,6 @@ typedef struct fiche_client{
 	int revenu; // revenu mensuel
 	float sante; // etat de santé E ]0-1]
 	int pret; // 1=oui / 0 = non
-
 }FC;
 
 int taille_fichier(FILE *f){
