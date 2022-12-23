@@ -42,7 +42,7 @@ FC *remplir_tableau(FILE *doc, int taille){ 					// rempli un tableau de fiche_c
 		nb_temp = strtok(line, ";");						// stocke dans nb_temp les caractère jusqu'au prochain caractère séparateur
 		temp.donnees[0] = atof(nb_temp);						//transforme la chaine de caractère en int et la stocke dans le tableau temp.donnees;
 
-    for(int z = 1;z < taille-1; z++){     //stocke le reste de la ligne dans temp.donnees
+    for(int z = 1; z < taille - 1; z++){     //stocke le reste de la ligne dans temp.donnees
       nb_temp = strtok(NULL, ";");
       temp.donnees[z] = atof(nb_temp);
     }
@@ -79,13 +79,14 @@ int main(){
 
 	printf("\n\nnikzebi\n\n");
 
-	for(int i = 0; i < (nb_lignes_fichier_csv(fichier)); i++){
+	for(int i = 0; i < nb_lignes_fichier_csv(fichier); i++){
 
 		for(int j = 0; j < nb_colonnes-1; j++){
 		  printf("%f | ",tab[i].donnees[j]);
 		}
     printf("categorie : %d",tab[i].categorie);
     printf("\n");
+
 	}
 
 	return 0;
