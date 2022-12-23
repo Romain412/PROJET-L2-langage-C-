@@ -55,9 +55,20 @@ FC *remplir_tableau(FILE *doc, int taille){ 					// rempli un tableau de fiche_c
 		  printf("%f | ",temp.donnees[j]);
 		}
     printf("\n");
-    tab[i] = temp; //stocke la variable temp dans le tableau tab
+
+		tab[i] = temp; //stocke la variable temp dans le tableau tab
 		i++;
 	}
+
+	for(int i = 0; i < nb_lignes_fichier_csv(doc); i++){
+
+		for(int j = 0; j < taille-1; j++){
+		  printf("%f | ",tab[i].donnees[j]);
+		}
+    printf("categorie : %d",tab[i].categorie);
+    printf("\n");
+	}
+
 
 	return tab;    //renvoie tab avec tout les temp étant les lignes du CSV
 }
