@@ -3,7 +3,11 @@
 #include <string.h>
 #include <math.h>
 
+
+
 const int longueur_max_ligne = 2000;
+
+
 
 struct vecteur{
 	float *donnees;
@@ -13,8 +17,8 @@ struct vecteur{
 
 
 
-
-int nb_lignes_fichier_csv(FILE *f){ 				// calcule le nombre de lignes d'un CSV et enleve 1 (pour ne pas compter l'en-tête avec les noms de colonne
+// calcule le nombre de lignes d'un CSV et enleve 1 (pour ne pas compter l'en-tête avec les noms de colonne)
+int nb_lignes_fichier_csv(FILE *f){
 	fseek(f,0,SEEK_SET);
 	char lettre = fgetc(f);
 	int nb = 1;
@@ -24,11 +28,13 @@ int nb_lignes_fichier_csv(FILE *f){ 				// calcule le nombre de lignes d'un CSV 
 		if(lettre == '\n') nb++;
 	}
 
-	fseek(f,0,SEEK_SET);								//Deplacement dans f de 0 caracteres a partir du debut (remet le fichier au debut)
+	fseek(f,0,SEEK_SET);	//Deplacement dans f de 0 caracteres a partir du debut (remet le fichier au debut)
 	return nb - 1;
 }
 
 
+
+//donne le nombre de colonnes
 int nb_colonnes_fichier_csv(FILE *f){
     fseek(f,0,SEEK_SET);
     char lettre = fgetc(f);
@@ -45,8 +51,8 @@ int nb_colonnes_fichier_csv(FILE *f){
 
 
 
-
-void remplir_tableau(FILE *doc, int taille, vecteur *tab){// rempli un tableau de fiche_client (FC) avec les données d'un fichier CSV
+// remplit un tableau de vecteurs avec les données d'un fichier CSV
+void remplir_tableau(FILE *doc, int taille, vecteur *tab){
 	int i=0;
 
 	char line[longueur_max_ligne];					//tableau qui stockera chaque ligne en chaîne de caractère
@@ -71,7 +77,10 @@ void remplir_tableau(FILE *doc, int taille, vecteur *tab){// rempli un tableau d
 	}
 }
 
-vecteur *creation_vecteur(int taille_vec){//LA FONCTION MARCHE
+
+
+
+vecteur *creation_vecteur(int taille_vec){
     vecteur *v=malloc(sizeof(*v));
     v->donnees=malloc(sizeof(float)*taille_vec-1);
     v->taille=taille_vec-1;
@@ -79,14 +88,16 @@ vecteur *creation_vecteur(int taille_vec){//LA FONCTION MARCHE
     return v;
 }
 
-void *creation_tab_vec(vecteur *tab_vec,int nb_lignes,int taille_vec){//LA FONCTION MARCHE
+
+//cree un tableau de vecteurs
+void *creation_tab_vec(vecteur *tab_vec,int nb_lignes,int taille_vec){
     for(int i=0;i<nb_lignes;i++){
         tab_vec[i]=*creation_vecteur(taille_vec-1);
     }
 }
 
-
-float distance(vecteur vec1,vecteur vec2){//LA FONCTION MARCHE
+//calcule la distance euclidienne entre 2 vecteurs
+float distance(vecteur vec1,vecteur vec2){
     float dist=0,tmp;
     for (int i=0;i<vec1.taille;i++){
         tmp=powf((vec1.donnees[i]-vec2.donnees[i]),2);
@@ -97,14 +108,16 @@ float distance(vecteur vec1,vecteur vec2){//LA FONCTION MARCHE
 }
 
 
-
-int dans_cercle(vecteur vec,vecteur Point,int K){//LA FONCTION MARCHE
+//retourne 1 si le vecteur est dans le cercle, 0 sinon
+int dans_cercle(vecteur vec,vecteur Point,int K){
 	if (distance(Point,vec)<=K) return 1;
 	return 0;
 }
 
 
-void voisins(vecteur *tab_vois, vecteur *tab_vec, int taille_tab_vec, vecteur Point, int K,int *p_nv_taille){//LA FONCTION MARCHE
+
+//remplit le tableau des vecteurs voisins et qui nous donne sa nouvelle taille
+void voisins(vecteur *tab_vois, vecteur *tab_vec, int taille_tab_vec, vecteur Point, int K,int *p_nv_taille){
     int j=0;
     for (int i=0;i<taille_tab_vec;i++){
         if(dans_cercle(tab_vec[i],Point,K)==1){
@@ -119,8 +132,8 @@ void voisins(vecteur *tab_vois, vecteur *tab_vec, int taille_tab_vec, vecteur Po
 
 
 
-
-void compteur_cate(vecteur *tab_vois, int *tab_categ, int taille){//NORMALEMENT LA FONCTION MARCHE
+//compte le nombre de vecteurs par categorie et rempli le tableau associe
+void compteur_cate(vecteur *tab_vois, int *tab_categ, int taille){
 	vecteur vec;
 	for (int i=0;i<taille;i++){
 		vec=tab_vois[i];
@@ -130,8 +143,8 @@ void compteur_cate(vecteur *tab_vois, int *tab_categ, int taille){//NORMALEMENT 
 
 
 
-
-int maxi(int tab_categ[], int taille){//LA FONCTION MARCHE
+//retourne la categorie la plus presente dans le tableau des categories
+int maxi(int tab_categ[], int taille){
     int cate_max=0;
     for(int i=0;i<taille;i++){
         if (tab_categ[i]>tab_categ[cate_max]){
@@ -152,17 +165,25 @@ int main(){
 
 	FILE *fichier = NULL;
 	fichier = fopen("heart_failure_clinical_records_dataset.csv","r");//ouverture du fichier
+	if (fichier==NULL){
+        printf("ERREUR LORS DE L'OUVERTURE DU FICHIER");
+        return 1;
+	}
+
+
     int nb_colonnes = nb_colonnes_fichier_csv(fichier);
     int nb_lignes=nb_lignes_fichier_csv(fichier);
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	vecteur *tableau=malloc(sizeof(vecteur)*nb_lignes-1);//allocation du tableau de vecteurs
 
     creation_tab_vec(tableau,nb_lignes,nb_colonnes);
     remplir_tableau(fichier,nb_colonnes,tableau);
 
     //affichage du tableau pour verifier
-	for(int y=0;y<nb_lignes-1;y++){
+	/*for(int y=0;y<nb_lignes-1;y++){
         printf("\n%d\t",y);
         for(int z=0;z<nb_colonnes-1;z++){
             printf("%f |  ",tableau[y].donnees[z]);
@@ -170,7 +191,7 @@ int main(){
         printf("categorie:%d",tableau[y].categorie);
     }
     printf("\n\n\n\n\n\n");
-
+    */
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -181,6 +202,7 @@ int main(){
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     vecteur *tab_vois=malloc(sizeof(vecteur)*nb_lignes);//tableau qui va contenir tous les vecteurs dans le cercle (voisins)
     int nvlle_taille_vois=nb_lignes;//nouvelle taille du tableau des vecteurs voisins
     int *p_nv_taille=&nvlle_taille_vois;
@@ -212,11 +234,12 @@ int main(){
 
     compteur_cate(tab_vois,tab_cate,nvlle_taille_vois);
 
+    Point.categorie=maxi(tab_cate,nb_cate);
 
     for (int i=0;i<nb_cate;i++){
         printf("Il y a %d vecteurs de categorie %d\n",tab_cate[i],i);
     }
-    printf("\nNOTRE VECTEUR EST DONC DE CATEGORIE %d\n",maxi(tab_cate,nb_cate));
+    printf("\nNOTRE VECTEUR EST DONC DE CATEGORIE %d\n",Point.categorie);
 
 
 
