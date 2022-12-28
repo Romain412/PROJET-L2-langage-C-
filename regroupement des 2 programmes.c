@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int longueur_max_ligne = 2000;
+const int longueur_max_ligne = 2000;
 
 struct vecteur{
 	float *donnees;
@@ -54,23 +54,24 @@ void remplir_tableau(FILE *doc, int taille, vecteur *tab){// rempli un tableau d
 
 vecteur *creation_vecteur(int taille_vec){//LA FONCTION MARCHE
     vecteur *v=malloc(sizeof(*v));
-    v->donnees=malloc(sizeof(float)*taille_vec);
-    v->taille=taille_vec;
+    v->donnees=malloc(sizeof(float)*taille_vec-1);
+    v->taille=taille_vec-1;
     v->categorie=0;
     return v;
 }
 
 void *creation_tab_vec(vecteur *tab_vec,int nb_lignes,int taille_vec){//LA FONCTION MARCHE
     for(int i=0;i<nb_lignes;i++){
-        tab_vec[i]=*creation_vecteur(taille_vec);
+        tab_vec[i]=*creation_vecteur(taille_vec-1);
     }
 }
 
 
 float distance(vecteur vec1,vecteur vec2){//LA FONCTION MARCHE
-    float dist=0;
+    float dist=0,tmp;
     for (int i=0;i<vec1.taille;i++){
-        dist+=pow((vec1.donnees[i]-vec2.donnees[i]),2);
+        tmp=powf((vec1.donnees[i]-vec2.donnees[i]),2);
+        dist=dist+tmp;
     }
     dist=sqrt(dist);
     return dist;
@@ -92,7 +93,7 @@ void voisins(vecteur *tab_vois, vecteur *tab_vec, int taille_tab_vec, vecteur Po
             j++;
         }
     }
-    *p_nv_taille=j;
+    *p_nv_taille=j-1;
 }
 
 
@@ -127,7 +128,7 @@ int maxi(int tab_categ[], int taille){//LA FONCTION MARCHE
 
 int main(){
 
-    int K=120000;
+    int K=250000;
 
 	FILE *fichier = NULL;
 	fichier = fopen("heart_failure_clinical_records_dataset.csv","r");//ouverture du fichier
@@ -141,7 +142,7 @@ int main(){
     remplir_tableau(fichier,nb_colonnes,tableau);
 
     //affichage du tableau pour verifier
-	for(int y=0;y<nb_lignes-1;y++){
+	/*for(int y=0;y<nb_lignes-1;y++){
         printf("\n%d\t",y);
         for(int z=0;z<nb_colonnes-1;z++){
             printf("%f |  ",tableau[y].donnees[z]);
@@ -149,12 +150,14 @@ int main(){
         printf("categorie:%d",tableau[y].categorie);
     }
     printf("\n\n\n\n\n\n");
+    */
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int donnees_point[]={44,0,471,1,53,0,499000,1,130,0,1,245};
-    vecteur Point={donnees_point,nb_colonnes,-1};//vecteur de categorie inconnue
+    int donnees_point[]={44,0,471,1,53,0,105000,1,130,0,1,245};
+    vecteur Point={donnees_point,nb_colonnes-1,-1};//vecteur de categorie inconnue
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,7 +166,7 @@ int main(){
     int *p_nv_taille=&nvlle_taille_vois;
 
     int nb_cate=2;
-    int *tab_cate=calloc(nb_cate,sizeof(*tab_cate));//tableau qui va contenir le nombre de vecteurs de chaque categorie
+    int *tab_cate=calloc(nb_cate,sizeof(int));//tableau qui va contenir le nombre de vecteurs de chaque categorie
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,18 +177,18 @@ int main(){
     voisins(tab_vois,tableau,nb_lignes,Point,K,&nvlle_taille_vois);//verif fonction voisins
     //printf("nvlle taille=%d\n",nvlle_taille_vois);//verif si la taille se met bien a jour
 
-    /*test pour verifier qu'on a les bons voisins->CA MARCHE
+/*    Affichage des voisins
     for(int i=0;i<nvlle_taille_vois;i++){//pour chaque vecteur
-        for(int j=0;j<taille_vec;j++){//pour chaque valeur dans ce vecteur
-            printf("%d\t",tab_vois[i].donnees[j]);
+            printf("\n%d\t",i);
+        for(int j=0;j<nb_colonnes-1;j++){//pour chaque valeur dans ce vecteur
+            printf("%f | ",tab_vois[i].donnees[j]);
         }
-        printf("\tdistance=%f",distance(Point,tab_vec[i]));
-        printf("\n");
+        printf("categorie: %d\t distance: %f ",tab_vois[i].categorie,distance(tab_vois[i],Point));
     }
-    */
+*/
 
 
-    printf("On a %d vecteurs voisins (a l'interieur du cercle)\n\n",nvlle_taille_vois);
+    printf("\n\nOn a %d vecteurs voisins (a l'interieur du cercle)\n\n",nvlle_taille_vois);
 
     compteur_cate(tab_vois,tab_cate,nvlle_taille_vois);
 
