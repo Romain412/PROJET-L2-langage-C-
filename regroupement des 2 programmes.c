@@ -10,6 +10,9 @@ struct vecteur{
 	int categorie;
 };typedef struct vecteur vecteur;
 
+
+
+
 int nb_lignes_fichier_csv(FILE *f){ 				// calcule le nombre de lignes d'un CSV et enleve 1 (pour ne pas compter l'en-tête avec les noms de colonne
 	fseek(f,0,SEEK_SET);
 	char lettre = fgetc(f);
@@ -22,6 +25,21 @@ int nb_lignes_fichier_csv(FILE *f){ 				// calcule le nombre de lignes d'un CSV 
 
 	fseek(f,0,SEEK_SET);								//Deplacement dans f de 0 caracteres a partir du debut (remet le fichier au debut)
 	return nb - 1;
+}
+
+
+int nb_colonnes_fichier_csv(FILE *f){
+    fseek(f,0,SEEK_SET);
+    char lettre = fgetc(f);
+    int nb = 1;
+
+    while( lettre != '\n') {
+        lettre = fgetc(f);
+        if(lettre == ';') nb++;
+    }
+
+    fseek(f,0,SEEK_SET);
+    return nb;
 }
 
 
@@ -126,13 +144,14 @@ int maxi(int tab_categ[], int taille){//LA FONCTION MARCHE
 
 
 
+
 int main(){
 
     int K=250000;
 
 	FILE *fichier = NULL;
 	fichier = fopen("heart_failure_clinical_records_dataset.csv","r");//ouverture du fichier
-    int nb_colonnes = 13;
+    int nb_colonnes = nb_colonnes_fichier_csv(fichier);
     int nb_lignes=nb_lignes_fichier_csv(fichier);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,7 +161,7 @@ int main(){
     remplir_tableau(fichier,nb_colonnes,tableau);
 
     //affichage du tableau pour verifier
-	/*for(int y=0;y<nb_lignes-1;y++){
+	for(int y=0;y<nb_lignes-1;y++){
         printf("\n%d\t",y);
         for(int z=0;z<nb_colonnes-1;z++){
             printf("%f |  ",tableau[y].donnees[z]);
@@ -150,7 +169,7 @@ int main(){
         printf("categorie:%d",tableau[y].categorie);
     }
     printf("\n\n\n\n\n\n");
-    */
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,7 +191,7 @@ int main(){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    printf("On dispose de %d vecteurs\n",nb_lignes-2);
+    printf("On dispose de %d vecteurs\n",nb_lignes-1);
 
     voisins(tab_vois,tableau,nb_lignes,Point,K,&nvlle_taille_vois);//verif fonction voisins
     //printf("nvlle taille=%d\n",nvlle_taille_vois);//verif si la taille se met bien a jour
